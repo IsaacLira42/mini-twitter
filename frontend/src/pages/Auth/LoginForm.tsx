@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 import { InputField } from "../../components/ui/InputField";
 import { Buttons } from "../../components/ui/Buttons";
 import { authService } from "../../api/auth.service";
@@ -11,12 +12,14 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useUserStore from "../../store/useUserStore";
+import { getApiError } from "../../lib/api";
 
 export const LoginForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -25,7 +28,9 @@ export const LoginForm = () => {
     },
   });
 
-  const { mutate, isPending, error } = useMutation({
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  const { mutate, isPending } = useMutation({
     mutationKey: ["auth", "login"],
     mutationFn: (data: LoginFormData) => authService.login(data),
     onSuccess: (response: LoginResponse) => {
@@ -35,12 +40,20 @@ export const LoginForm = () => {
       // ! Redirecionar para a Timeline quando estiver pronta
       // ! navigate('/timeline');
     },
-    onError: (error: Error) => {
-      console.error("Erro no login:", error.message);
+    onError: (err: unknown) => {
+      const { message, fields } = getApiError(err);
+      if (fields) {
+        Object.entries(fields).forEach(([field, msg]) => {
+          setError(field as any, { type: "server", message: String(msg) });
+        });
+      } else {
+        setApiError(String(message));
+      }
     },
   });
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
+    setApiError(null);
     mutate(data);
   };
 
@@ -54,9 +67,9 @@ export const LoginForm = () => {
       </p>
 
       {/* Exibição do erro */}
-      {error && (
+      {apiError && (
         <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error.message}
+          {apiError}
         </div>
       )}
 

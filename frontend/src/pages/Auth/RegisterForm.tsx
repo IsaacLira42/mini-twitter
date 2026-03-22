@@ -1,4 +1,5 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authService } from "../../api/auth.service";
 import {
@@ -6,6 +7,7 @@ import {
   type RegisterFormData,
 } from "../../schemas/auth.schemas";
 import { useMutation } from "@tanstack/react-query";
+import { getApiError } from "../../lib/api";
 import { InputField } from "../../components/ui/InputField";
 import { Buttons } from "../../components/ui/Buttons";
 
@@ -15,6 +17,7 @@ export const RegisterForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -24,7 +27,7 @@ export const RegisterForm = () => {
     },
   });
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ["auth", "register"],
     mutationFn: (data: RegisterFormData) => authService.register(data),
     onSuccess: () => {
@@ -33,12 +36,22 @@ export const RegisterForm = () => {
       // ! Redirecionar para a Login quando estiver pronta
       // ! navigate('/login');
     },
-    onError: (error: Error) => {
-      console.error("Erro no registro:", error.message);
+    onError: (err: unknown) => {
+      const { message, fields } = getApiError(err);
+      if (fields) {
+        Object.entries(fields).forEach(([field, msg]) => {
+          setError(field as any, { type: "server", message: String(msg) });
+        });
+      } else {
+        setApiError(String(message));
+      }
     },
   });
 
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
+    setApiError(null);
     mutate(data);
   };
 
@@ -52,13 +65,13 @@ export const RegisterForm = () => {
       </p>
 
       {/* Exibição do erro da API */}
-      {error && (
+      {apiError && (
         <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error.message}
+          {apiError}
         </div>
       )}
 
-      {/* Exibição de erros do formulário (opcional) */}
+      {/* Exibição de erros do formulário */}
       {errors.root && (
         <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           {errors.root.message}
