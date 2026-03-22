@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    /* Cores de Backgroud */
+    /* Paginas */
+    --color-brand-light: #fafafa;
+    --background-image-brand-gradient: linear-gradient(to bottom right, #0F172B, #070B14);
+    /* Cards */
+    --color-card-light: #E2E8F0;
+    --color-card-dark: #1D293D;
+
+    /* Cores de fontes */
+    /* Cores de Titulos e destaques */
+    --color-text-title-light: #0D93F2;
+    --color-text-title-dark: #FFFFFF;
+
+    /* Body */
+    --color-text-body-light: #62748E;
+    --color-text-body-dark: #90A1B9;
+}
