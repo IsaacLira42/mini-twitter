@@ -1,4 +1,3 @@
-import { PostCard } from "../../components/post/PostCard";
 import type { Post } from "../../schemas/post.schema";
 
 const mockPostComImagem: Post = {
@@ -17,9 +16,7 @@ const mockPostComImagem: Post = {
 const TimelinePage = () => {
   return (
     <div className="flex justify-center min-h-screen">
-      <div className="flex flex-col max-w-160 w-full">
-        <PostCard post={mockPostComImagem} />
-      </div>
+      <div className="flex flex-col max-w-160 w-full"></div>
     </div>
   );
 };
