@@ -1,9 +1,12 @@
+import Index from "./pages/Auth/Index";
+import { ToastProvider } from "./components/ui/Toast";
+
 function App() {
   return (
-    <>
-     teste
-    </>
-  )
+    <ToastProvider>
+      <Index />
+    </ToastProvider>
+  );
 }
 
-export default App
+export default App;

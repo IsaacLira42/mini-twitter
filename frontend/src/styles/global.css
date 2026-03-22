@@ -1,22 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    /* Cores de Backgroud */
-    /* Paginas */
-    --color-brand-light: #fafafa;
-    --background-image-brand-gradient: linear-gradient(to bottom right, #0F172B, #070B14);
-    /* Cards */
-    --color-card-light: #E2E8F0;
-    --color-card-dark: #1D293D;
+  /* CORES */
+  /* Cores de Backgroud */
+  /* Paginas */
+  --color-brand-light: #fafafa;
+  --background-image-brand-gradient: linear-gradient(
+    to bottom right,
+    #0f172b,
+    #070b14
+  );
+  /* Cards */
+  --color-card-light: #e2e8f0;
+  --color-card-dark: #1d293d;
 
-    /* Cores de fontes */
-    /* Cores de Titulos e destaques */
-    --color-text-title-light: #0D93F2;
-    --color-text-title-dark: #FFFFFF;
+  /* Cores de Fontes */
+  /* Titulos */
+  --color-text-tittle-light: #0d93f2;
+  --color-text-tittle-dark: #ffffff;
 
-    /* Body */
-    --color-text-body-light: #62748E;
-    --color-text-body-dark: #90A1B9;
+  /* Body */
+  --color-text-body-light: #62748e;
+  --color-text-body-dark: #90a1b9;
+
+  /* Cores de Destaque */
+  --color-button: #0d93f2;
+
+  /* Fonte */
+  --font-default: "Manrope", sans-serif;
+}
+
+@layer base {
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-default);
+    background-color: var(--color-brand-light);
+  }
+
+  .dark body {
+    background-image: var(--background-image-brand-gradient);
+    background-color: transparent;
+  }
 }
