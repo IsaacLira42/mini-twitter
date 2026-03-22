@@ -1,10 +1,10 @@
-import Index from "./pages/Auth/Index";
 import { ToastProvider } from "./components/ui/Toast";
+import TimelinePage from "./pages/Timeline/TimelinePage";
 
 function App() {
   return (
     <ToastProvider>
-      <Index />
+      <TimelinePage />
     </ToastProvider>
   );
 }
