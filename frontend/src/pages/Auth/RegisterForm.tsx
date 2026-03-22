@@ -1,5 +1,5 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useState } from "react";
+import { useToast } from "../../components/ui/Toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authService } from "../../api/auth.service";
 import {
@@ -27,6 +27,8 @@ export const RegisterForm = () => {
     },
   });
 
+  const { push } = useToast();
+
   const { mutate, isPending } = useMutation({
     mutationKey: ["auth", "register"],
     mutationFn: (data: RegisterFormData) => authService.register(data),
@@ -43,15 +45,12 @@ export const RegisterForm = () => {
           setError(field as any, { type: "server", message: String(msg) });
         });
       } else {
-        setApiError(String(message));
+        push({ message: String(message), type: "error" });
       }
     },
   });
 
-  const [apiError, setApiError] = useState<string | null>(null);
-
   const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
-    setApiError(null);
     mutate(data);
   };
 
@@ -63,13 +62,6 @@ export const RegisterForm = () => {
       <p className="mb-8 text-text-body-light dark:text-text-body-dark">
         Por favor, insira os dados solicitados para fazer cadastro.
       </p>
-
-      {/* Exibição do erro da API */}
-      {apiError && (
-        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {apiError}
-        </div>
-      )}
 
       {/* Exibição de erros do formulário */}
       {errors.root && (

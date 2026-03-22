@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
-import { useState } from "react";
+import { useToast } from "../../components/ui/Toast";
 import { InputField } from "../../components/ui/InputField";
 import { Buttons } from "../../components/ui/Buttons";
 import { authService } from "../../api/auth.service";
@@ -28,7 +28,7 @@ export const LoginForm = () => {
     },
   });
 
-  const [apiError, setApiError] = useState<string | null>(null);
+  const { push } = useToast();
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["auth", "login"],
@@ -47,13 +47,12 @@ export const LoginForm = () => {
           setError(field as any, { type: "server", message: String(msg) });
         });
       } else {
-        setApiError(String(message));
+        push({ message: String(message), type: "error" });
       }
     },
   });
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
-    setApiError(null);
     mutate(data);
   };
 
@@ -65,13 +64,6 @@ export const LoginForm = () => {
       <p className="mb-8 text-text-body-light dark:text-text-body-dark">
         Por favor, insira seus dados de login.
       </p>
-
-      {/* Exibição do erro */}
-      {apiError && (
-        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {apiError}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <InputField
