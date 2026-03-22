@@ -2,21 +2,29 @@ import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { InputField } from "../../components/ui/InputField";
 import { Buttons } from "../../components/ui/Buttons";
-
-type InputsLogin = {
-  email: string;
-  password: string;
-};
+import { authService } from "../../api/auth.service";
+import type { LoginFormData } from "../../schemas/auth.schemas";
+import { useMutation } from "@tanstack/react-query";
 
 export const LoginForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InputsLogin>();
+  } = useForm<LoginFormData>();
 
-  const onSubmit: SubmitHandler<InputsLogin> = (data) => {
-    console.log(data);
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: (data: LoginFormData) => authService.login(data),
+    onSuccess: () => {
+      // ! Redirecionar para a Timeline quando estiver pronta
+    },
+    onError: (error: Error) => {
+      console.error("Erro no login:", error.message);
+    },
+  });
+
+  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
+    mutate(data);
   };
 
   return (
@@ -27,6 +35,13 @@ export const LoginForm = () => {
       <p className="text-text-body-light dark:text-text-body-dark">
         Por favor, insira seus dados de login.
       </p>
+
+      {/* Exibição do erro */}
+      {error && (
+        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error.message}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <InputField
@@ -49,8 +64,11 @@ export const LoginForm = () => {
           required
         />
 
-        <Buttons className="w-full h-14 font-bold bg-button text-text-body-light dark:text-text-body-dark hover:bg-button-hover">
-          Continuar
+        <Buttons
+          className="w-full h-14 font-bold bg-button text-text-body-light dark:text-text-body-dark hover:bg-button-hover disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isPending}
+        >
+          {isPending ? "Entrando..." : "Continuar"}
         </Buttons>
       </form>
     </div>
