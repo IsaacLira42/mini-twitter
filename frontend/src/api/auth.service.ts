@@ -1,13 +1,22 @@
-import type { LoginFormData, RegisterFormData } from "../schemas/auth.schemas";
+// api/auth.service.ts
+import type {
+  LoginFormData,
+  RegisterFormData,
+  LoginResponse,
+  RegisterResponse,
+} from "../schemas/auth.schemas";
 import api from "./axios";
 
 export const authService = {
-  register(data: RegisterFormData) {
-    return api.post("/auth/register", data);
+  // ? As informações de retorno serão mesmo usadas?
+  async register(data: RegisterFormData): Promise<RegisterResponse> {
+    const response = await api.post("/auth/register", data);
+    return response.data;
   },
 
-  login(data: LoginFormData) {
-    return api.post("/auth/login", data);
+  async login(data: LoginFormData): Promise<LoginResponse> {
+    const response = await api.post("/auth/login", data);
+    return response.data;
   },
 
   logout() {
