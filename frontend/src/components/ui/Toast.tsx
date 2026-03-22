@@ -46,7 +46,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`max-w-sm w-full px-4 py-3 rounded shadow-lg text-sm text-white break-words ${
+            className={`max-w-sm w-full px-4 py-3 rounded shadow-lg text-sm text-white wrap-break-word ${
               t.type === "success"
                 ? "bg-green-600"
                 : t.type === "info"
