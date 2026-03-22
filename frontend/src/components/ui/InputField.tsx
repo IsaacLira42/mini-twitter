@@ -22,7 +22,7 @@ export const InputField = ({
   <div className="flex flex-col text-text-body-light dark:text-text-body-dark gap-1 mb-4">
     <label htmlFor={id}>{label}</label>
     <input
-      className="h-14.25 border border-card-light rounded-lg focus:outline-none focus:ring-2 focus:ring-button px-4!"
+      className="h-14.25 border bg-white border-card-light rounded-lg focus:outline-none focus:ring-2 focus:ring-button px-4!"
       id={id}
       type={type}
       {...register(id, {

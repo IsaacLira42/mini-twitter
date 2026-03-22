@@ -19,14 +19,14 @@ export const AuthTabs = ({ tabDefault = "Login" }: AuthTabsProps) => {
 
   return (
     <div>
-      <div className="flex gap-4 mb-4 h-11">
+      <div className="flex mb-4 h-11 my-14! border-b border-gray-300 dark:border-text-body-dark">
         <button
           className={`
-          flex-1 h-full border-b-3 transition-colors duration-150
+          pb-2 flex-1 h-full font-bold transition-all duration-150
           ${
             currentTab === "Login"
-              ? "border-button text-text-body-light dark:text-text-body-dark font-medium"
-              : "border-transparent text-text-body-light dark:text-text-body-dark hover:border-gray-300 dark:hover:border-gray-600"
+              ? "border-b-4 border-button text-button dark:text-text-body-dark -mb-px"
+              : "text-text-body-light dark:text-text-body-dark hover:text-gray-600 dark:hover:text-gray-300"
           }
         `}
           onClick={() => handleAlterTab("Login")}
@@ -35,16 +35,16 @@ export const AuthTabs = ({ tabDefault = "Login" }: AuthTabsProps) => {
         </button>
         <button
           className={`
-          flex-1 h-full border-b-3 transition-colors duration-150
+          pb-2 flex-1 h-full font-bold transition-all duration-150
           ${
             currentTab === "Register"
-              ? "border-button text-text-body-light dark:text-text-body-dark font-medium"
-              : "border-transparent text-text-body-light dark:text-text-body-dark hover:border-gray-300 dark:hover:border-gray-600"
+              ? "border-b-4 border-button text-button dark:text-text-body-dark -mb-px"
+              : "text-text-body-light dark:text-text-body-dark hover:text-gray-600 dark:hover:text-gray-300"
           }
         `}
           onClick={() => handleAlterTab("Register")}
         >
-          Register
+          Cadastrar
         </button>
       </div>
 

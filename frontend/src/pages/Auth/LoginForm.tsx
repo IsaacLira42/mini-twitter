@@ -3,15 +3,26 @@ import type { SubmitHandler } from "react-hook-form";
 import { InputField } from "../../components/ui/InputField";
 import { Buttons } from "../../components/ui/Buttons";
 import { authService } from "../../api/auth.service";
-import type { LoginFormData, LoginResponse } from "../../schemas/auth.schemas";
+import {
+  loginSchema,
+  type LoginFormData,
+  type LoginResponse,
+} from "../../schemas/auth.schemas";
 import { useMutation } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const LoginForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>();
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const { mutate, isPending, error } = useMutation({
     mutationKey: ["auth", "login"],
@@ -38,7 +49,7 @@ export const LoginForm = () => {
       <h2 className="font-bold text-text-tittle-light dark:text-text-tittle-dark text-[30px]">
         Olá, de novo!
       </h2>
-      <p className="text-text-body-light dark:text-text-body-dark">
+      <p className="mb-8 text-text-body-light dark:text-text-body-dark">
         Por favor, insira seus dados de login.
       </p>
 
