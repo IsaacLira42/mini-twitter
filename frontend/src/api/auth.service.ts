@@ -6,6 +6,7 @@ import type {
   RegisterResponse,
 } from "../schemas/auth.schemas";
 import api from "./axios";
+import useUserStore from "../store/useUserStore";
 
 export const authService = {
   // ? As informações de retorno serão mesmo usadas?
@@ -20,8 +21,9 @@ export const authService = {
   },
 
   logout() {
-    const token = localStorage.getItem("token");
-    localStorage.removeItem("token");
+    const token = useUserStore.getState().token;
+    // limpar estado local do usuário
+    useUserStore.getState().logout();
     return api.post("/auth/logout", { token });
   },
 };

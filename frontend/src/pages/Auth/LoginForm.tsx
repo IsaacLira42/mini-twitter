@@ -10,6 +10,7 @@ import {
 } from "../../schemas/auth.schemas";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useUserStore from "../../store/useUserStore";
 
 export const LoginForm = () => {
   const {
@@ -28,9 +29,8 @@ export const LoginForm = () => {
     mutationKey: ["auth", "login"],
     mutationFn: (data: LoginFormData) => authService.login(data),
     onSuccess: (response: LoginResponse) => {
-      // Salvar o token e dados do usuário no lacalStorage
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
+      // Salvar no store global (zustand)
+      useUserStore.getState().setAuth(response);
 
       // ! Redirecionar para a Timeline quando estiver pronta
       // ! navigate('/timeline');

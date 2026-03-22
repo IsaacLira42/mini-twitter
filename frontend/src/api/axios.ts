@@ -1,18 +1,23 @@
-import axios from "axios"
+import axios from "axios";
+import useUserStore from "../store/useUserStore";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/",
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  },
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("@App:token");
+  try {
+    const token = useUserStore.getState().token;
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  } catch (e) {
+    // se algo falhar ao acessar o store, não bloqueia a requisição
   }
 
   return config;
