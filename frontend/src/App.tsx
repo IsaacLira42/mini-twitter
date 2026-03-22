@@ -1,7 +1,9 @@
+import Index from "./pages/Auth/Index"
+
 function App() {
   return (
     <>
-     teste
+     <Index />
     </>
   )
 }
