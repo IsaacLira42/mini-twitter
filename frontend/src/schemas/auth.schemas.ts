@@ -17,6 +17,23 @@ export const registerSchema = z.object({
   password: passwordSchema,
 });
 
+export const LoginResponseSchema = z.object({
+  token: z.uuid("Token inválido"),
+  user: z.object({
+    id: z.number(),
+    name: z.string(),
+    email: z.email(),
+  }),
+});
+
+export const RegisterResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.email(),
+});
+
 // Tipos
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
+export type LoginResponse = z.infer<typeof LoginResponseSchema>;
+export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;

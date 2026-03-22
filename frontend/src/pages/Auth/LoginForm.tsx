@@ -3,7 +3,7 @@ import type { SubmitHandler } from "react-hook-form";
 import { InputField } from "../../components/ui/InputField";
 import { Buttons } from "../../components/ui/Buttons";
 import { authService } from "../../api/auth.service";
-import type { LoginFormData } from "../../schemas/auth.schemas";
+import type { LoginFormData, LoginResponse } from "../../schemas/auth.schemas";
 import { useMutation } from "@tanstack/react-query";
 
 export const LoginForm = () => {
@@ -14,9 +14,15 @@ export const LoginForm = () => {
   } = useForm<LoginFormData>();
 
   const { mutate, isPending, error } = useMutation({
+    mutationKey: ["auth", "login"],
     mutationFn: (data: LoginFormData) => authService.login(data),
-    onSuccess: () => {
+    onSuccess: (response: LoginResponse) => {
+      // Salvar o token e dados do usuário no lacalStorage
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(response.user));
+
       // ! Redirecionar para a Timeline quando estiver pronta
+      // ! navigate('/timeline');
     },
     onError: (error: Error) => {
       console.error("Erro no login:", error.message);
