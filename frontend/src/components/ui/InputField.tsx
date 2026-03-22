@@ -19,10 +19,10 @@ export const InputField = ({
   error,
   required,
 }: InputFieldProps) => (
-  <div className="flex flex-col">
+  <div className="flex flex-col text-text-body-light dark:text-text-body-dark gap-1 mb-4">
     <label htmlFor={id}>{label}</label>
     <input
-      className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="h-14.25 border border-card-light rounded-lg focus:outline-none focus:ring-2 focus:ring-button px-4!"
       id={id}
       type={type}
       {...register(id, {

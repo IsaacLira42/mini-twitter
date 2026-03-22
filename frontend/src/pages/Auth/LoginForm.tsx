@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { InputField } from "../../components/ui/InputField";
 import { Buttons } from "../../components/ui/Buttons";
-import { useState } from "react";
 
 type InputsLogin = {
   email: string;
@@ -50,7 +49,9 @@ export const LoginForm = () => {
           required
         />
 
-        <Buttons className="">Continuar</Buttons>
+        <Buttons className="w-full h-14 font-bold bg-button text-text-body-light dark:text-text-body-dark hover:bg-button-hover">
+          Continuar
+        </Buttons>
       </form>
     </div>
   );
