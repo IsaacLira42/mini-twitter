@@ -1,10 +1,10 @@
 import { ToastProvider } from "./components/ui/Toast";
-import TimelinePage from "./pages/Timeline/TimelinePage";
+import AppRoutes from "./routes/Routes";
 
 function App() {
   return (
     <ToastProvider>
-      <TimelinePage />
+      <AppRoutes />
     </ToastProvider>
   );
 }

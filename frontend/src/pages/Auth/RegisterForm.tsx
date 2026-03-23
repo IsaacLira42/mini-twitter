@@ -10,8 +10,11 @@ import { useMutation } from "@tanstack/react-query";
 import { getApiError } from "../../lib/api";
 import { InputField } from "../../components/ui/InputField";
 import { Buttons } from "../../components/ui/Buttons";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterForm = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -35,8 +38,8 @@ export const RegisterForm = () => {
     onSuccess: () => {
       // Limpar o formulário após registro bem-sucedido
       reset();
-      // ! Redirecionar para a Login quando estiver pronta
-      // ! navigate('/login');
+
+      navigate("/login");
     },
     onError: (err: unknown) => {
       const { message, fields } = getApiError(err);

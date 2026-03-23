@@ -13,8 +13,11 @@ import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useUserStore from "../../store/useUserStore";
 import { getApiError } from "../../lib/api";
+import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -37,8 +40,7 @@ export const LoginForm = () => {
       // Salvar no store global (zustand)
       useUserStore.getState().setAuth(response);
 
-      // ! Redirecionar para a Timeline quando estiver pronta
-      // ! navigate('/timeline');
+      navigate("/timeline");
     },
     onError: (err: unknown) => {
       const { message, fields } = getApiError(err);
