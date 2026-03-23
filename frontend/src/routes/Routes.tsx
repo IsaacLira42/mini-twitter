@@ -9,21 +9,23 @@ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/auth" element={<AuthIndex />} />
-
+        {/* Auth page: if already authenticated redirect to timeline */}
         <Route
-          path="/timeline"
+          path="/auth"
           element={
-            isAuthenticated ? <TimelinePage /> : <Navigate to="/auth" replace />
+            isAuthenticated ? (
+              <Navigate to="/timeline" replace />
+            ) : (
+              <AuthIndex />
+            )
           }
         />
 
-        <Route
-          path="/"
-          element={
-            <Navigate to={isAuthenticated ? "/timeline" : "/auth"} replace />
-          }
-        />
+        {/* Timeline is public — main landing page */}
+        <Route path="/timeline" element={<TimelinePage />} />
+
+        {/* Root -> timeline */}
+        <Route path="/" element={<Navigate to="/timeline" replace />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

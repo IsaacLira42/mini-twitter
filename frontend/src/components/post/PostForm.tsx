@@ -10,10 +10,17 @@ import {
   type Post,
 } from "../../schemas/post.schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useUserStore from "../../store/useUserStore";
+import { useToast } from "../ui/Toast";
+import { useNavigate } from "react-router-dom";
 
 export const PostForm = ({ onCreate }: { onCreate?: (post: Post) => void }) => {
   const queryClient = useQueryClient();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const { push } = useToast();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -33,21 +40,27 @@ export const PostForm = ({ onCreate }: { onCreate?: (post: Post) => void }) => {
     mode: "onChange",
   });
 
-  const { mutate, isPending } = useMutation<Post, Error, PostFormData>({
+  const { mutate, isPending } = useMutation<Post, unknown, PostFormData>({
     mutationKey: ["posts", "create"],
     mutationFn: (payload: PostFormData) => postsService.createPost(payload),
     onSuccess: (data: Post) => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       if (onCreate) onCreate(data);
       reset();
-      setImagePreview(null); // Limpa preview da imagem
+      setImagePreview(null);
     },
-    onError: (err: Error) => {
-      console.error("Erro ao criar post:", err);
+    onError: () => {
+      push({ message: "Erro ao criar post", type: "error" });
     },
   });
 
   const onSubmit = (data: PostFormData) => {
+    if (!isAuthenticated) {
+      push({ message: "Faça login para criar um post", type: "info" });
+      navigate("/auth");
+      return;
+    }
+
     mutate(data);
   };
 
@@ -55,7 +68,7 @@ export const PostForm = ({ onCreate }: { onCreate?: (post: Post) => void }) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validação de tamanho manual (5MB)
+    // Validação de tamanho (5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError("image", {
         type: "manual",
@@ -87,9 +100,23 @@ export const PostForm = ({ onCreate }: { onCreate?: (post: Post) => void }) => {
       className="max-w-full bg-white border border-gray-100 rounded-xl p-4 shadow-[4px_4px_10px_rgba(0,0,0,0.08)] font-sans flex flex-col justify-between transition-all duration-300"
     >
       <div>
+        {!isAuthenticated && (
+          <div className="mb-3 text-sm text-text-body-light dark:text-text-body-dark">
+            Faça login para publicar.{" "}
+            <button
+              type="button"
+              className="text-button underline"
+              onClick={() => navigate("/auth")}
+            >
+              Entrar
+            </button>
+          </div>
+        )}
+
         <input
           {...register("title")}
           placeholder="Título (min. 3 caracteres)"
+          disabled={!isAuthenticated}
           className={`w-full text-lg text-slate-900 placeholder:text-slate-400 mb-1 outline-none border-none p-0 bg-transparent ${
             errors.title ? "text-red-600" : ""
           }`}
@@ -104,6 +131,7 @@ export const PostForm = ({ onCreate }: { onCreate?: (post: Post) => void }) => {
           {...register("content")}
           placeholder="E aí, o que está rolando?"
           rows={3}
+          disabled={!isAuthenticated}
           className={`w-full text-lg text-slate-900 placeholder:text-slate-400 resize-none outline-none border-none p-0 focus:ring-0 bg-transparent ${
             errors.content ? "text-red-600" : ""
           }`}
@@ -114,7 +142,6 @@ export const PostForm = ({ onCreate }: { onCreate?: (post: Post) => void }) => {
           </p>
         )}
 
-        {/* Preview da imagem */}
         {imagePreview && (
           <div className="relative mt-2 mb-2">
             <img
@@ -150,11 +177,15 @@ export const PostForm = ({ onCreate }: { onCreate?: (post: Post) => void }) => {
               onChange={handleImageUpload}
               className="hidden"
               id="image-upload"
-              disabled={isSubmitting || isPending}
+              disabled={isSubmitting || isPending || !isAuthenticated}
             />
             <label
               htmlFor="image-upload"
-              className="text-button hover:bg-button/10 p-2 rounded-full transition-colors cursor-pointer outline-none inline-flex items-center justify-center"
+              className={`text-button hover:bg-button/10 p-2 rounded-full transition-colors inline-flex items-center justify-center ${
+                !isAuthenticated
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
               aria-label="Anexar imagem"
             >
               <Image size={24} strokeWidth={1.5} />
@@ -163,7 +194,7 @@ export const PostForm = ({ onCreate }: { onCreate?: (post: Post) => void }) => {
 
           <Buttons
             type="submit"
-            disabled={!isValid || isSubmitting || isPending}
+            disabled={!isValid || isSubmitting || isPending || !isAuthenticated}
             className="h-8 px-6 text-[14px] font-bold flex items-center justify-center shadow-[0_4px_12px_rgba(0,149,255,0.3)]"
           >
             {isSubmitting || isPending ? "Postando..." : "Postar"}
