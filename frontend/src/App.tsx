@@ -1,10 +1,10 @@
-import Index from "./pages/Auth/Index";
 import { ToastProvider } from "./components/ui/Toast";
+import AppRoutes from "./routes/Routes";
 
 function App() {
   return (
     <ToastProvider>
-      <Index />
+      <AppRoutes />
     </ToastProvider>
   );
 }

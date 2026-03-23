@@ -27,6 +27,10 @@
   --color-text-body-light: #62748e;
   --color-text-body-dark: #90a1b9;
 
+  /* Timeline */
+  --color-text-body-timeline-light: #314158;
+  --color-text-body-timeline-dark: #cbd5e1;
+
   /* Cores de Destaque */
   --color-button: #0d93f2;
 
