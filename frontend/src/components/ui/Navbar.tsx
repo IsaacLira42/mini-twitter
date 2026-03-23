@@ -1,14 +1,21 @@
 import { Search, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 import useUserStore from "../../store/useUserStore";
 import { authService } from "../../api/auth.service";
 import { useToast } from "./Toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Buttons } from "./Buttons";
 
 export const Navbar = () => {
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const { push } = useToast();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState<string>(searchParams.get("search") ?? "");
+
+  useEffect(() => {
+    setQuery(searchParams.get("search") ?? "");
+  }, [searchParams]);
 
   const handleLogout = async () => {
     try {
@@ -43,6 +50,15 @@ export const Navbar = () => {
           <input
             type="text"
             placeholder="Buscar por post..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                const q = query.trim();
+                if (q) setSearchParams({ search: q, page: "1" });
+                else setSearchParams({ page: "1" });
+              }
+            }}
             className="w-full bg-transparent border border-gray-200 dark:border-slate-700 rounded-xl py-2 pl-10 pr-4 text-sm text-text-body-timeline-light dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[#0095FF] focus:ring-1 focus:ring-[#0095FF] transition-all"
           />
         </div>

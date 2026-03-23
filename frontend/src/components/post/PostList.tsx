@@ -1,9 +1,10 @@
 import {
+  keepPreviousData,
   useQuery,
   useQueryClient,
-  keepPreviousData,
 } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { PostCard } from "./PostCard";
 import { PostForm } from "./PostForm";
 import postsService from "../../api/posts.service";
@@ -13,15 +14,21 @@ import { Pagination } from "./Pagination";
 export const PostList = () => {
   const queryClient = useQueryClient();
   const [page, setPage] = useState<number>(1);
+  const [searchParams] = useSearchParams();
+  const search = searchParams.get("search") ?? "";
+
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
 
   const { data, isLoading } = useQuery<
     PaginatedPosts,
     unknown,
     PaginatedPosts,
-    [string, number]
+    [string, number, string]
   >({
-    queryKey: ["posts", page],
-    queryFn: () => postsService.getPosts(page),
+    queryKey: ["posts", page, search],
+    queryFn: () => postsService.getPosts(page, search),
     staleTime: 1000 * 60,
     placeholderData: keepPreviousData,
   });
