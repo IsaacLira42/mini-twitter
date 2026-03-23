@@ -1,1 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* CORES */
+  /* Cores de Backgroud */
+  /* Paginas */
+  --color-brand-light: #fafafa;
+  --background-image-brand-gradient: linear-gradient(
+    to bottom right,
+    #0f172b,
+    #070b14
+  );
+  /* Cards */
+  --color-card-light: #e2e8f0;
+  --color-card-dark: #1d293d;
+
+  /* Cores de Fontes */
+  /* Titulos */
+  --color-text-tittle-light: #0d93f2;
+  --color-text-tittle-dark: #ffffff;
+
+  /* Body */
+  --color-text-body-light: #62748e;
+  --color-text-body-dark: #90a1b9;
+
+  /* Timeline */
+  --color-text-body-timeline-light: #314158;
+  --color-text-body-timeline-dark: #cbd5e1;
+
+  /* Cores de Destaque */
+  --color-button: #0d93f2;
+
+  /* Fonte */
+  --font-default: "Manrope", sans-serif;
+}
+
+@layer base {
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-default);
+    background-color: var(--color-brand-light);
+  }
+
+  .dark body {
+    background-image: var(--background-image-brand-gradient);
+    background-color: transparent;
+  }
+}

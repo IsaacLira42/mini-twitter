@@ -1,9 +1,12 @@
+import { ToastProvider } from "./components/ui/Toast";
+import AppRoutes from "./routes/Routes";
+
 function App() {
   return (
-    <>
-     teste
-    </>
-  )
+    <ToastProvider>
+      <AppRoutes />
+    </ToastProvider>
+  );
 }
 
-export default App
+export default App;
