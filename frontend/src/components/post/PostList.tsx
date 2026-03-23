@@ -1,29 +1,53 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
+import { useState } from "react";
 import { PostCard } from "./PostCard";
 import { PostForm } from "./PostForm";
 import postsService from "../../api/posts.service";
 import type { Post, PaginatedPosts } from "../../schemas/post.schema";
+import { Pagination } from "./Pagination";
 
 export const PostList = () => {
   const queryClient = useQueryClient();
+  const [page, setPage] = useState<number>(1);
 
-  const { data, isLoading } = useQuery<PaginatedPosts>({
-    queryKey: ["posts"],
-    queryFn: () => postsService.getPosts(),
+  const { data, isLoading } = useQuery<
+    PaginatedPosts,
+    unknown,
+    PaginatedPosts,
+    [string, number]
+  >({
+    queryKey: ["posts", page],
+    queryFn: () => postsService.getPosts(page),
     staleTime: 1000 * 60,
+    placeholderData: keepPreviousData,
   });
 
   const posts: Post[] = data?.posts ?? [];
 
+  const total = data?.total ?? 0;
+  const limit = data?.limit ?? 10;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
   const handleCreate = (post: Post) => {
-    queryClient.setQueryData<PaginatedPosts | undefined>(["posts"], (old) => {
-      if (!old) return { posts: [post], total: 1, page: 1, limit: 10 };
-      return {
-        ...old,
-        posts: [post, ...(old.posts || [])],
-        total: old.total + 1,
-      };
-    });
+    if (page === 1) {
+      queryClient.setQueryData<PaginatedPosts | undefined>(
+        ["posts", 1],
+        (old) => {
+          if (!old) return { posts: [post], total: 1, page: 1, limit };
+          return {
+            ...old,
+            posts: [post, ...(old.posts || [])],
+            total: old.total + 1,
+          };
+        },
+      );
+    } else {
+      setPage(1);
+    }
   };
 
   return (
@@ -37,6 +61,12 @@ export const PostList = () => {
       ) : (
         posts.map((post: Post) => <PostCard key={post.id} post={post} />)
       )}
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
     </div>
   );
 };
