@@ -2,85 +2,180 @@
 
 ![](./mini_twitter.gif)
 
-Uma aplicação full-stack simplificada inspirada no Twitter, focada em performance e uma experiência de usuário fluida. Este repositório contém tanto o **Frontend** quanto as definições de integração com o **Backend**.
+Aplicação inspirada no Twitter com foco em **arquitetura de frontend, gerenciamento de estado e integração com API REST**.  
+O backend atua como suporte, permitindo simular um cenário real de consumo de dados.
+
+---
+
+## 🎯 Objetivo
+
+Este projeto foi desenvolvido para explorar, na prática:
+
+- Organização escalável de aplicações React
+- Gerenciamento eficiente de estado global
+- Integração com APIs reais (autenticação + CRUD)
+- Experiência de usuário em operações assíncronas
+
+Não é apenas um clone visual — é um **exercício de construção de frontend orientado a dados e estado**.
 
 ---
 
 ## 🚀 Tecnologias Core
 
-O projeto utiliza o que há de mais moderno no ecossistema React para garantir tipagem forte e estado eficiente:
-
-- **Framework:** [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
-- **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
-- **Estilização:** [Tailwind CSS](https://tailwindcss.com/)
-- **Gerenciamento de Estado:** [Zustand](https://github.com/pmndrs/zustand) (com persistência)
-- **Formulários & Validação:** [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
-- **Requisições:** [Axios](https://axios-http.com/)
+- **Framework:** React + Vite
+- **Linguagem:** TypeScript
+- **Estilização:** Tailwind CSS
+- **Gerenciamento de Estado:** Zustand (com persistência)
+- **Formulários & Validação:** React Hook Form + Zod
+- **Requisições HTTP:** Axios
 
 ---
 
-## 📦 Estrutura do Projeto
+## 🧠 Decisões de Arquitetura
 
-A arquitetura foi pensada para ser escalável e de fácil manutenção:
+Algumas escolhas foram feitas intencionalmente:
+
+- **Zustand ao invés de Redux**  
+  Menor boilerplate e melhor legibilidade para estado global moderado
+
+- **Separação por domínio (api, pages, components, store)**  
+  Reduz acoplamento e facilita evolução do projeto
+
+- **Zod para validação**  
+  Tipagem consistente entre entrada de dados e regras de negócio
+
+- **Camada de API isolada (`/api`)**  
+  Evita espalhar lógica de requisição pela interface
+
+---
+
+## 📦 Estrutura do Projeto (Frontend)
 
 ```bash
-frontend/src/
-├── api/          # Serviços de conexão (Auth, Posts, Instância Axios)
-├── components/   # Componentes de UI e Lógica de Negócio (PostCard, Navbar, etc.)
-├── lib/          # Utilitários e helpers (Tratamento de erros)
-├── pages/        # Telas da aplicação (Timeline, Auth)
-├── routes/       # Configuração do React Router
-└── store/        # Gerenciamento de estado global com Zustand
+src/
+├── api/
+├── components/
+├── lib/
+├── pages/
+├── routes/
+├── schemas/
+├── store/
+└── styles/
 ```
+
+---
+
+## 🔌 API REST (Backend)
+
+O backend expõe uma API REST com autenticação via JWT e operações básicas de posts.
+
+### 📄 Posts
+
+| Método | Endpoint        | Descrição                       | Auth |
+| ------ | --------------- | ------------------------------- | ---- |
+| GET    | /posts          | Lista posts (paginação e busca) | ❌   |
+| POST   | /posts          | Cria um novo post               | ✅   |
+| PUT    | /posts/:id      | Atualiza um post                | ✅   |
+| DELETE | /posts/:id      | Remove um post                  | ✅   |
+| POST   | /posts/:id/like | Alterna like/unlike             | ✅   |
+
+**Query params:**
+
+- `page` (opcional)
+- `search` (opcional)
+
+---
+
+### 🔐 Autenticação
+
+| Método | Endpoint       | Descrição          | Auth |
+| ------ | -------------- | ------------------ | ---- |
+| POST   | /auth/register | Criação de usuário | ❌   |
+| POST   | /auth/login    | Retorna JWT        | ❌   |
+| POST   | /auth/logout   | Invalida sessão    | ✅   |
+
+---
+
+## ⚙️ Backend (Suporte)
+
+O backend foi mantido **intencionalmente simples**, com o objetivo de:
+
+- Simular um ambiente real de integração
+- Fornecer endpoints REST claros
+- Permitir foco no frontend
+
+Ele não cobre cenários avançados de segurança ou arquitetura — atua como base funcional.
+
+---
+
+## 🛡️ Funcionalidades
+
+- Autenticação com persistência de sessão
+- Criação e listagem de posts
+- Paginação de dados
+- Validação de formulários
+- Feedback com notificações (toast)
+- Interface responsiva
 
 ---
 
 ## 🛠️ Como Executar
 
-### 1. Clonar e Instalar
+### 1. Clonar o repositório
 
 ```bash
-# Entre na pasta do frontend
-cd frontend
-
-# Instale as dependências
-npm install
+git clone https://github.com/IsaacLira42/mini-twitter.git
+cd mini-twitter
 ```
 
-### 2. Configuração de Ambiente
+---
 
-Crie um arquivo `.env` na raiz da pasta `frontend` (baseado no `.env.example`) e configure a URL do seu backend:
+### 2. Rodar o backend (Docker)
+
+```bash
+cd backend
+docker-compose up --build
+```
+
+---
+
+### 3. Rodar o frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Crie um arquivo `.env` em `frontend/`:
 
 ```env
 VITE_API_URL=http://localhost:3000
 ```
 
-### 3. Rodar o Desenvolvimento
+---
 
-```bash
-npm run dev
-```
+## ⚠️ Limitações conhecidas
 
-Acesse: `http://localhost:5173`
+- Autorização simplificada (sem controle avançado de permissões)
+- Logout sem estratégia robusta de invalidação de tokens
+- Validações backend básicas
+- Paginação baseada em página (não cursor)
 
 ---
 
-## 🔌 Integração com API (Endpoints)
+## 📌 Observações
 
-A aplicação consome os seguintes recursos do backend:
-
-| Método | Endpoint         | Descrição                                  |
-| :----- | :--------------- | :----------------------------------------- |
-| `POST` | `/auth/register` | Criação de nova conta                      |
-| `POST` | `/auth/login`    | Autenticação (Retorna JWT + User)          |
-| `GET`  | `/posts`         | Listagem paginada de posts                 |
-| `POST` | `/posts`         | Criação de post (Suporta imagem em Base64) |
+Este projeto prioriza **clareza arquitetural e fluxo de dados no frontend**.
+O backend existe como suporte funcional para esse cenário.
 
 ---
 
-## 🛡️ Funcionalidades Implementadas
+## 👤 Autor
 
-- **Autenticação Persistente:** O login do usuário é mantido mesmo após atualizar a página via Zustand Middleware.
-- **Validação de Dados:** Todos os inputs de formulário são validados no client-side com Zod.
-- **Feedback ao Usuário:** Sistema de Toast para notificações de sucesso ou erro nas ações.
-- **Layout Responsivo:** Interface totalmente adaptável para dispositivos móveis e desktop usando Tailwind.
+**Isaac Lira**  
+Desenvolvedor Full Stack | TypeScript Enthusiast
+
+[![GitHub](https://skillicons.dev/icons?i=github)](https://github.com/IsaacLira42)
+[![LinkedIn](https://skillicons.dev/icons?i=linkedin)](https://linkedin.com/in/isaaclira42)
+[![Gmail](https://skillicons.dev/icons?i=gmail)](mailto:isaaclira422@gmail.com)
