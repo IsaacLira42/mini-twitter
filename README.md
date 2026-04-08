@@ -1,5 +1,7 @@
 # 🐦 Mini-Twitter
 
+![](./mini_twitter.gif)
+
 Uma aplicação full-stack simplificada inspirada no Twitter, focada em performance e uma experiência de usuário fluida. Este repositório contém tanto o **Frontend** quanto as definições de integração com o **Backend**.
 
 ---
